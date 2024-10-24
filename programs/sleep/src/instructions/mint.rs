@@ -13,7 +13,6 @@ use spl_type_length_value::variable_len_pack::VariableLenPack;
 use crate::state::TokenConfig;
 
 #[derive(Accounts)]
-#[instruction(args: TokenConfig)]
 pub struct InitToken<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,

@@ -1,3 +1,7 @@
+use std::char::MAX;
+use std::ops::Sub;
+use std::time;
+
 use anchor_lang::prelude::*;
 use anchor_spl::token_2022::MintTo;
 use anchor_spl::token_interface::{self, Mint, Token2022, TokenAccount};
@@ -5,7 +9,10 @@ use anchor_spl::token_interface::{self, Mint, Token2022, TokenAccount};
 use crate::error::ClaimError;
 use crate::utils::random_token;
 use crate::Sleeper;
-use crate::{MAX_TIME, MIN_TIME};
+// use crate::{MAX_TIME, MIN_TIME};
+
+pub const MIN_TIME: u64 = 25200000;
+pub const MAX_TIME: u64 = 32400000;
 
 #[derive(Accounts)]
 
@@ -33,8 +40,11 @@ pub fn claim_token(ctx: Context<Claim>, end_time: u64) -> Result<()> {
 
     let time_difference = end_time.saturating_sub(start_time);
 
+    msg!("{}", time_difference >= MIN_TIME);
+    msg!("{}", time_difference <= MAX_TIME);
+
     require!(
-        time_difference >= MIN_TIME && end_time <= MAX_TIME,
+        time_difference >= MIN_TIME && time_difference <= MAX_TIME,
         ClaimError::OutTime
     );
 
@@ -53,7 +63,7 @@ pub fn claim_token(ctx: Context<Claim>, end_time: u64) -> Result<()> {
 
     let cpi_program = ctx.accounts.token_program.to_account_info();
     let cpi_context = CpiContext::new(cpi_program, cpi_accounts);
-    token_interface::mint_to(cpi_context, amount)?;
+    token_interface::mint_to(cpi_context, amount * 1000000)?;
 
     //  reset time
 

@@ -30,7 +30,7 @@ umi.use(signerIdentity(signer));
 
   //  file
 
-  const imagePath = "./sleep-1.png";
+  const imagePath = "./sl-token-1.png";
   const imageFile = readFileSync(imagePath);
 
   const umiImageFile = createGenericFile(imageFile, imagePath, {

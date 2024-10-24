@@ -4,8 +4,7 @@ use anchor_lang::prelude::*;
 #[derive(InitSpace)]
 pub struct Sleeper {
     pub sleeper_key: Pubkey,
-    #[max_len(100)]
-    pub name: String,
+    pub token_account: Pubkey,
     pub start_time: u64,
     pub end_time: u64,
     pub streak: u16,

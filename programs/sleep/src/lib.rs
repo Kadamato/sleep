@@ -8,7 +8,7 @@ pub mod utils;
 pub use instructions::*;
 pub use state::*;
 
-declare_id!("AnEoEjuCrNR7ytBk3hLwrGCQHmCPEo2Dfr4pbsUGpDyH");
+declare_id!("13go66PaZfF5vMYAKhvq5tRbcAmcEEiS8eLeqJnwkokF");
 
 #[program]
 pub mod sleep {
@@ -20,20 +20,15 @@ pub mod sleep {
         Ok(())
     }
 
-    pub fn create_new_sleeper(ctx: Context<InitSleeper>, name: String) -> Result<()> {
-        let _ = create_sleeper(ctx, name);
+    pub fn create_new_sleeper(ctx: Context<InitSleeper>) -> Result<()> {
+        let _ = create_sleeper(ctx);
         Ok(())
     }
 
-    pub fn create_new_token_account(ctx: Context<InitTokenAccount>) -> Result<()> {
-        let _ = create_token_account(ctx);
-        Ok(())
-    }
-
-    pub fn mint_token_to(ctx: Context<MintToken>, amount: u64) -> Result<()> {
-        let _ = mint_token(ctx, amount);
-        Ok(())
-    }
+    // pub fn mint_token_to(ctx: Context<MintToken>, amount: u64) -> Result<()> {
+    //     let _ = mint_token(ctx, amount);
+    //     Ok(())
+    // }
 
     pub fn start_sleep(ctx: Context<Sleep>, time: u64) -> Result<()> {
         let _ = sleep(ctx, time);

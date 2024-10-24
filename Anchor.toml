@@ -4,17 +4,19 @@
 resolution = true
 skip-lint = false
 
-[programs.devnet]
-sleep = "AnEoEjuCrNR7ytBk3hLwrGCQHmCPEo2Dfr4pbsUGpDyH"
+# [programs.devnet]
+# sleep = "13go66PaZfF5vMYAKhvq5tRbcAmcEEiS8eLeqJnwkokF"
 
 [programs.Localnet]
-sleep = "AnEoEjuCrNR7ytBk3hLwrGCQHmCPEo2Dfr4pbsUGpDyH"
+sleep = "13go66PaZfF5vMYAKhvq5tRbcAmcEEiS8eLeqJnwkokF"
+
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Devnet"
+# cluster = "Devnet"
+cluster = "Localnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

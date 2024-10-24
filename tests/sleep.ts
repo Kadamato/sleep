@@ -21,7 +21,7 @@ const program = anchor.workspace.Sleep as Program<Sleep>;
 const metadataConfig = {
   name: "Sleep Token",
   symbol: "SLEEP",
-  uri: "https://devnet.irys.xyz/H1prdeDSuCA46SSoh1UzZcwdZda3CfpXtpaFL1C4mUYN",
+  uri: "https://devnet.irys.xyz/5nPAnvtydNMLxrp3aZhm4hgZ6QnCAkJoPH3g1SEjNPRA",
 };
 
 const TOKEN_2022_PROGRAM_ID = new anchor.web3.PublicKey(
@@ -47,11 +47,11 @@ const [sleeperPDA] = anchor.web3.PublicKey.findProgramAddressSync(
 
 const [tokenAccount] = anchor.web3.PublicKey.findProgramAddressSync(
   [
+    Buffer.from("token_account"),
     wallet.publicKey.toBuffer(),
-    TOKEN_2022_PROGRAM_ID.toBuffer(),
     mintPDA.toBuffer(),
   ],
-  SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID
+  program.programId
 );
 
 describe("sleep", () => {
@@ -65,58 +65,25 @@ describe("sleep", () => {
       })
       .signers([wallet.payer])
       .rpc();
-
+    await confirmTransaction(tx, provider);
+    console.log("Your transaction signature", tx);
+  });
+  it("init sleeper account", async () => {
+    const tx = await program.methods
+      .createNewSleeper()
+      .accountsPartial({
+        sleeperAccount: sleeperPDA,
+        payer: wallet.publicKey,
+        mint: mintPDA,
+      })
+      .rpc();
     await confirmTransaction(tx, provider);
     console.log("Your transaction signature", tx);
   });
 
-  it("init sleeper account", async () => {
-    const tx = await program.methods
-      .createNewSleeper("kadamato")
-      .accountsPartial({
-        payer: wallet.publicKey,
-        sleeperAccount: sleeperPDA,
-      })
-      .rpc();
-
-    await confirmTransaction(tx, provider);
-
-    console.log("create new sleeper success");
-  });
-
-  it("init token account", async () => {
-    const tx = await program.methods
-      .createNewTokenAccount()
-      .accountsPartial({
-        payer: wallet.publicKey,
-        tokenAccount: tokenAccount,
-        mint: mintPDA,
-      })
-      .rpc();
-
-    await confirmTransaction(tx, provider);
-
-    console.log("create token account success");
-  });
-
-  it("mint token ", async () => {
-    const tx = await program.methods
-      .mintTokenTo(new BN(1000 * LAMPORTS_PER_SOL))
-      .accountsPartial({
-        payer: wallet.publicKey,
-        mint: mintPDA,
-        receiver: tokenAccount,
-      })
-      .rpc();
-
-    await confirmTransaction(tx, provider);
-
-    console.log("Mint token success");
-  });
-
   it("sleep", async () => {
     const tx = await program.methods
-      .startSleep(new BN(1728960851175))
+      .startSleep(new BN(43200000))
       .accountsPartial({
         payer: wallet.publicKey,
         sleeper: sleeperPDA,
@@ -124,13 +91,12 @@ describe("sleep", () => {
       .rpc();
 
     await confirmTransaction(tx, provider);
-
-    console.log("Sleeping ...");
+    console.log("signature:", tx);
   });
 
-  it("Claim ", async () => {
+  it("claim", async () => {
     const tx = await program.methods
-      .claim(new BN(1728977943648))
+      .claim(new BN(72000000))
       .accountsPartial({
         payer: wallet.publicKey,
         mint: mintPDA,
@@ -138,22 +104,8 @@ describe("sleep", () => {
         tokenAccount: tokenAccount,
       })
       .rpc();
-
     await confirmTransaction(tx, provider);
-
-    const sleeperInfo = await program.account.sleeper.fetch(sleeperPDA);
-
-    console.log(sleeperInfo);
-
-    console.log("claim token...");
-
-    console.log("token account info", tokenAccount);
-
-    console.log("sleeper account", sleeperPDA);
-
-    console.log("mint token", mintPDA);
-
-    console.log("claim signature:", tx);
+    console.log("signature:", tx);
   });
 });
 
